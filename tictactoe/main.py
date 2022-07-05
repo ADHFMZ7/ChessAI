@@ -1,23 +1,30 @@
-from game import Game
+from game import players, Game
 
-game = Game(3)
+SIZE = 10
 
-players = {
-  -1 : 'y',
-  0  : ' ',
-  1  : 'x'
-  }
+def take_input():
+  x, y = input("enter coordinates separated by a space: ").split(' ')
+  return int(x), int(y) 
 
-
-while not game.compute_win():
-  print("\n-------")
+def print_board():
+  print("\n", end='')
+  print("-" * (SIZE * 2 + 1))
   for i in game.board:
       print('|', end='')
       for j in i:
         print(players[j], end='|')
+      print("\n", end='')
+      print("-" * (SIZE * 2 + 1))
 
-      print("\n-------")
-  coord = tuple(int(input()) for i in range(2)) 
-  print(coord)
-  game.turn(coord, int(input("Player(y: -1, x: 1): ")))
- 
+
+if __name__ == "__main__":
+
+  game = Game(SIZE)
+
+  while not game.winner() and not game.is_full():
+    
+    print_board()
+    game.take_turn(take_input())
+
+  print_board()
+  print(f"Player: {players[game.winner()]} has won")
