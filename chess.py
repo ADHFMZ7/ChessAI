@@ -1,6 +1,4 @@
 
-
-
 class Chess:
 
   def __init__(self):
@@ -17,9 +15,9 @@ class Board:
   def
 
 
-def Piece:
+class Piece:
 
   def __init__(self):
-  
+     
   
 
