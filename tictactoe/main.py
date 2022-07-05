@@ -1,6 +1,6 @@
 from game import players, Game
 
-SIZE = 30
+SIZE = 20
 
 if __name__ == "__main__":
 

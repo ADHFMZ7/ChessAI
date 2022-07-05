@@ -3,7 +3,7 @@ from random import randint
 players = {
  -1: 'O',
   0: ' ',
-  1: 'x'
+  1: 'X'
 }
 
 
@@ -76,6 +76,8 @@ class Game:
     except ValueError:
       print("invalid number, try again")
       return self.take_input() 
+    if int(x) >= self.size or int(y) >= self.size:
+      return self.take_input()
     return int(x), int(y)
 
 
