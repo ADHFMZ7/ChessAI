@@ -42,16 +42,11 @@ class Game:
 
 
   # Takes a turn
-  # Takes x, y coord and player
+  # Takes x, y coord as tuple
   # -1 for y, 1 for x
   def take_turn(self, coord):
     x, y = coord
-    if ( 
-        (x, y) not in self.valid_turns
-        #x not in range(0, len(self.board)) or
-        #y not in range(0, len(self.board)) or
-        #self.board[x][y] != 0
-       ):
+    if (x, y) not in self.valid_turns:
       return False 
     else:
       player = -1 if self.turn % 2 else 1
