@@ -1,3 +1,5 @@
+from tkinter import *
+from tkinter import font as font
 from random import randint
 
 players = {
@@ -22,12 +24,38 @@ class Game:
     # used for ai turn pool
     self.turn = 0
     self.valid_turns = [(i, j) for i in range(size) for j in range(size)]
+    self.grid = self.valid_turns
+    
+    # initialize gui
+    self.window = Tk()
+    myFont = font.Font(size=200//self.size) 
+    self.buttons = [[0] * size  for i in range(size)]
+    for x, y in self.valid_turns:
+      self.buttons[x][y] = Button(self.window, 
+                                  command=lambda row=x, 
+                                  column=y: self.on_click(row, column),
+                                  width=15//self.size,
+                                  height=18//self.size,
+                                  font=myFont)
+      self.buttons[x][y].grid(row=x, column=y) 
+    
+    self.window.mainloop() 
 
-
+  def end_game(self):
+    for x, y in self.grid:
+      self.buttons[x][y].config(state='disabled')
+    
+  def on_click(self, x, y): 
+    self.take_turn((x, y))
+    self.buttons[x][y].config(text=players[self.board[x][y]], state='disabled')
+    if self.winner() or self.is_full():
+      self.end_game()
+       
+  
+  
   # Checks if any win conditions are met
   # returns 1 if x wins, -1 if y wins, 0 if no one won
   def winner(self):
-    self.print_board()
     if self.size in self.rows + self.columns + self.diag:
       print(f"{players[1]} has won!")
       return 1
@@ -63,36 +91,10 @@ class Game:
     return (self.valid_turns[0] if len(self.valid_turns) == 1 else
             self.valid_turns[randint(0, len(self.valid_turns)-1)])
 
-
   # returns True if Board is full
   # returns False otherwise
   def is_full(self):
     return len(self.valid_turns) == 0
 
-  # Takes input and makes sure it is valid
-  # TODO: make sure input can be cast to int
-  def take_input(self):
-    try:
-      x, y = input("enter coordinates separated by space: ").split() 
-      x, y = int(x), int(y)
-    except ValueError:
-      print("invalid number, try again")
-      return self.take_input() 
-    
-    if ( x not in range(0, self.size) or 
-         y not in range(0, self.size) or
-         (x, y) not in self.valid_turns):
-      print("number not in range, try again")
-      return self.take_input()
-    return x, y
-
-
-  def print_board(self):
-    print("\n", end='')
-    print("-" * (self.size * 2 + 1))
-    for i in self.board:
-        print('|', end='')
-        for j in i:
-          print(players[j], end='|')
-        print("\n", end='')
-        print("-" * (self.size * 2 + 1))
+if __name__ == "__main__":
+  game = Game(1+1) 
