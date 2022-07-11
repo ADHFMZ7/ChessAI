@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import font as font
 from random import randint
+from minimax import minimax
 
 players = {
  -1: 'O',
@@ -28,15 +29,16 @@ class Game:
     
     # initialize gui
     self.window = Tk()
-    myFont = font.Font(size=200//self.size) 
+    myFont = font.Font(size=50//self.size, weight='bold') 
     self.buttons = [[0] * size  for i in range(size)]
     for x, y in self.valid_turns:
       self.buttons[x][y] = Button(self.window, 
                                   command=lambda row=x, 
                                   column=y: self.on_click(row, column),
-                                  width=15//self.size,
-                                  height=18//self.size,
+                                  width=18//self.size,
+                                  height=21//self.size,
                                   font=myFont)
+      
       self.buttons[x][y].grid(row=x, column=y) 
     
     self.window.mainloop() 
@@ -47,10 +49,12 @@ class Game:
     
   def on_click(self, x, y): 
     self.take_turn((x, y))
-    self.buttons[x][y].config(text=players[self.board[x][y]], state='disabled')
     if self.winner() or self.is_full():
       self.end_game()
-       
+    self.take_turn(self.ai_turn())
+    if self.winner() or self.is_full():
+      self.end_game() 
+    
   
   
   # Checks if any win conditions are met
@@ -84,12 +88,23 @@ class Game:
     self.rows[x] += player
     self.columns[y] += player
     
+    self.buttons[x][y].config(text=players[self.board[x][y]], state='disabled')
     self.turn += 1
     return True 
 
   def ai_turn(self):
-    return (self.valid_turns[0] if len(self.valid_turns) == 1 else
-            self.valid_turns[randint(0, len(self.valid_turns)-1)])
+    #return (self.valid_turns[0] if len(self.valid_turns) == 1 else
+    #        self.valid_turns[randint(0, len(self.valid_turns)-1)])
+    return self.best_move()
+
+  def best_move(self):
+    scores = []
+    max_index = 0
+    for i in range(len(self.valid_turns)):
+      scores.append(minimax(self, self.turn, -1))
+      max_index = max(max_index, scores[i])
+    return self.valid_turns[max_index]
+
 
   # returns True if Board is full
   # returns False otherwise
@@ -97,4 +112,4 @@ class Game:
     return len(self.valid_turns) == 0
 
 if __name__ == "__main__":
-  game = Game(1+1) 
+  game = Game(3) 
