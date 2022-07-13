@@ -16,6 +16,7 @@ class Game:
    
     # store board information
     self.board = [[0] * size for i in range(size)] 
+    
     self.size = size
 
     # used for calculating win
@@ -32,37 +33,38 @@ class Game:
   def ai_turn(self):
     if self.turn == 0: 
       return (self.valid_turns[0] if len(self.valid_turns) == 1 else
-              self.valid_turnss[randint(0, len(self.valid_turns)-1)])
+              self.valid_turns[randint(0, len(self.valid_turns)-1)])
     return self.best_move()
 
   
-  # def best_move(self):
-  #   scores = []
-  #   min_index = 0
-  #   for i in range(len(self.valid_turns)):
-  #     temp = deepcopy(self)
-  #     temp.take_turn(self.valid_turns[i])
-  #     scores.append(minimax(temp, (self.size**2)-self.turn, AI))
-  #     min_index = i if scores[i] < scores[min_index] else min_index
-  #   print(self.valid_turns)
-  #   print(scores)
-  #   print("min: ", min_index)
-  #   return self.valid_turns[min_index]
-
+  def best_move(self):
+    scores = []
+    min_index = 0
+    for i in range(len(self.valid_turns)):
+      temp = deepcopy(self)
+      temp.take_turn(self.valid_turns[i])
+      scores.append(minimax(temp, (self.size**2)-self.turn, AI, self.size**2))
+      min_index = i if scores[i] <= scores[min_index] else min_index
+    print(self.valid_turns)
+    print(scores)
+    print("min: ", min_index)
+    return self.valid_turns[min_index]
+    
+    
 
 # Checks if any win conditions are met
   # returns 1 if x wins, -1 if y wins, 0 if no one won
   def winner(self):
   
     if self.size in self.rows + self.columns + self.diag:
-      # print(f"{players[1]} has won!")
+      #print(f"{players[1]} has won!")
       return 1
     elif -self.size in self.rows + self.columns + self.diag:
-      # print(f"{players[-1]} has won!")
+      #print(f"{players[-1]} has won!")
       return -1
     else:
       if self.is_full():
-        # print("Draw!")
+        #print("Draw!")
         pass
       return 0
 
@@ -86,14 +88,7 @@ class Game:
     self.turn += 1
     return True 
 
-
- # returns True if Board is full
-  # returns False otherwise
-  def is_full(self):
-    return len(self.valid_turns) == 0
-
-
-  # Takes input and makes sure it is valid
+    # Takes input and makes sure it is valid
   def take_input(self):
     try:
       x, y = input("enter coordinates separated by space: ").split() 
@@ -108,8 +103,15 @@ class Game:
       print("number not in range, try again")
       return self.take_input()
     return x, y
+  
+  
+ # returns True if Board is full
+  # returns False otherwise
+  def is_full(self):
+    return len(self.valid_turns) == 0
 
 
+  # returns string to be passed to print function
   def __str__(self):
     res = "\n"+"-" * (self.size * 2 + 1) + '\n'
     for i in self.board:
@@ -119,9 +121,24 @@ class Game:
         res+="\n"+"-" * (self.size * 2 + 1) + '\n'
     return res
   
-class HumanPlayer:
-  def__init__(self, game, player):
-    self.game = game  
-    self.player = player
+# class HumanPlayer:
+#   def __init__(self, game, player):
+#     self.game = game  
+#     self.player = player
   
-  def take_turn():
+  
+#   # Takes input and makes sure it is valid
+#   def take_input(self):
+#     try:
+#       x, y = input("enter coordinates separated by space: ").split() 
+#       x, y = int(x), int(y)
+#     except ValueError:
+#       print("invalid number, try again")
+#       return self.take_input() 
+    
+#     if ( x not in range(0, self.game.size) or 
+#          y not in range(0, self.game.size) or
+#          (x, y) not in self.valid_turns):
+#       print("number not in range, try again")
+#       return self.take_input()
+#     return x, y
